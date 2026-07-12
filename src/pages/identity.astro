@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
     <title>设置后台密码 | 个人网站</title>
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <style>
       body {
         display: grid;
@@ -82,7 +81,6 @@
     </main>
 
     <script is:inline>
-      const netlifyIdentity = window.netlifyIdentity;
       const status = document.getElementById('status');
       const openIdentity = document.getElementById('open-identity');
       const recoverPassword = document.getElementById('recover-password');
@@ -91,16 +89,69 @@
       const hasRecoveryToken = authParams.has('recovery_token');
       const hasConfirmationToken = authParams.has('confirmation_token');
       const hasIdentityToken = hasInviteToken || hasRecoveryToken || hasConfirmationToken;
+      const identityScriptId = 'netlify-identity-widget';
+      const identityScriptUrl = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
+      let identityPromise;
+      let loginHandlerRegistered = false;
 
-      const openWidget = () => {
-        if (!netlifyIdentity) {
-          status.textContent = 'Netlify Identity 没有加载成功。请刷新页面，或检查 Netlify Identity 是否已经启用。';
+      const loadIdentity = () => {
+        if (window.netlifyIdentity) {
+          return Promise.resolve(window.netlifyIdentity);
+        }
+
+        if (identityPromise) {
+          return identityPromise;
+        }
+
+        identityPromise = new Promise((resolve) => {
+          const existingScript = document.getElementById(identityScriptId);
+
+          const finish = () => {
+            window.setTimeout(() => resolve(window.netlifyIdentity), 0);
+          };
+
+          if (existingScript) {
+            existingScript.addEventListener('load', finish, { once: true });
+            existingScript.addEventListener('error', () => resolve(undefined), { once: true });
+            return;
+          }
+
+          const script = document.createElement('script');
+          script.id = identityScriptId;
+          script.src = identityScriptUrl;
+          script.onload = finish;
+          script.onerror = () => resolve(undefined);
+          document.head.appendChild(script);
+        });
+
+        return identityPromise;
+      };
+
+      const registerLoginHandler = (netlifyIdentity) => {
+        if (loginHandlerRegistered) {
           return;
         }
 
+        netlifyIdentity.on('login', () => {
+          document.location.href = '/admin/';
+        });
+        loginHandlerRegistered = true;
+      };
+
+      const openWidget = async () => {
+        status.textContent = '正在加载 Netlify Identity...';
+        const netlifyIdentity = await loadIdentity();
+
+        if (!netlifyIdentity) {
+          status.textContent = 'Netlify Identity 脚本没有加载成功。请关闭广告拦截器或浏览器隐私插件后刷新页面。';
+          return;
+        }
+
+        registerLoginHandler(netlifyIdentity);
+
         if (hasInviteToken) {
           status.textContent = '检测到邀请链接。请在弹出的窗口里设置你的后台密码。';
-          netlifyIdentity.open('signup');
+          netlifyIdentity.open();
           return;
         }
 
@@ -114,28 +165,19 @@
         netlifyIdentity.open('login');
       };
 
-      if (netlifyIdentity) {
-        netlifyIdentity.on('init', () => {
-          if (hasIdentityToken) {
-            openWidget();
-          }
-        });
-
-        netlifyIdentity.on('login', () => {
-          document.location.href = '/admin/';
-        });
+      if (hasIdentityToken) {
+        openWidget();
       }
 
       openIdentity.addEventListener('click', openWidget);
-      recoverPassword.addEventListener('click', () => {
-        if (netlifyIdentity) {
-          netlifyIdentity.open('login');
-        }
-      });
+      recoverPassword.addEventListener('click', async () => {
+        const netlifyIdentity = await loadIdentity();
 
-      window.addEventListener('load', () => {
-        if (hasIdentityToken) {
-          openWidget();
+        if (netlifyIdentity) {
+          registerLoginHandler(netlifyIdentity);
+          netlifyIdentity.open('login');
+        } else {
+          status.textContent = 'Netlify Identity 脚本没有加载成功。请关闭广告拦截器或浏览器隐私插件后刷新页面。';
         }
       });
     </script>
