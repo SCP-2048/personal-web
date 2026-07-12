@@ -46,23 +46,17 @@ const siteTitle = '个人网站';
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script is:inline>
       const netlifyIdentity = window.netlifyIdentity;
+      const authParams = new URLSearchParams(window.location.hash.slice(1));
+      const hasIdentityToken =
+        authParams.has('invite_token') ||
+        authParams.has('recovery_token') ||
+        authParams.has('confirmation_token');
+
+      if (hasIdentityToken && window.location.pathname !== '/identity/') {
+        window.location.replace(`/identity/${window.location.hash}`);
+      }
 
       if (netlifyIdentity) {
-        const authParams = new URLSearchParams(window.location.hash.slice(1));
-        const hasIdentityToken =
-          authParams.has('invite_token') ||
-          authParams.has('recovery_token') ||
-          authParams.has('confirmation_token');
-
-        const openIdentity = () => {
-          if (hasIdentityToken) {
-            netlifyIdentity.open();
-          }
-        };
-
-        netlifyIdentity.on('init', openIdentity);
-        window.addEventListener('load', openIdentity);
-
         netlifyIdentity.on('login', () => {
           if (hasIdentityToken) {
             document.location.href = '/admin/';

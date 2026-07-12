@@ -1,0 +1,143 @@
+---
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>设置后台密码 | 个人网站</title>
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <style>
+      body {
+        display: grid;
+        min-height: 100vh;
+        place-items: center;
+        margin: 0;
+        background: #f8f5ef;
+        color: #27221d;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      main {
+        width: min(100% - 32px, 680px);
+        border: 1px solid #e6ded2;
+        border-radius: 28px;
+        padding: 32px;
+        background: #fffaf2;
+        box-shadow: 0 24px 80px rgb(62 45 28 / 10%);
+      }
+
+      p {
+        line-height: 1.8;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      button,
+      a {
+        display: inline-flex;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #8b5e34;
+        border-radius: 999px;
+        padding: 0 18px;
+        color: #5d3d21;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      button {
+        background: #8b5e34;
+        color: white;
+        cursor: pointer;
+      }
+
+      code {
+        border-radius: 6px;
+        padding: 2px 6px;
+        background: #f1e7d9;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>设置后台密码</h1>
+      <p id="status">正在读取 Netlify Identity 邀请信息。如果没有自动弹出窗口，请点击下面的按钮。</p>
+      <p>
+        这个页面只用于创建或重置后台密码。密码设置完成后，会自动跳转到 <code>/admin/</code>。
+      </p>
+      <div class="actions">
+        <button id="open-identity" type="button">打开设置密码窗口</button>
+        <button id="recover-password" type="button">重置密码</button>
+        <a href="/admin/">返回后台</a>
+      </div>
+    </main>
+
+    <script is:inline>
+      const netlifyIdentity = window.netlifyIdentity;
+      const status = document.getElementById('status');
+      const openIdentity = document.getElementById('open-identity');
+      const recoverPassword = document.getElementById('recover-password');
+      const authParams = new URLSearchParams(window.location.hash.slice(1));
+      const hasInviteToken = authParams.has('invite_token');
+      const hasRecoveryToken = authParams.has('recovery_token');
+      const hasConfirmationToken = authParams.has('confirmation_token');
+      const hasIdentityToken = hasInviteToken || hasRecoveryToken || hasConfirmationToken;
+
+      const openWidget = () => {
+        if (!netlifyIdentity) {
+          status.textContent = 'Netlify Identity 没有加载成功。请刷新页面，或检查 Netlify Identity 是否已经启用。';
+          return;
+        }
+
+        if (hasInviteToken) {
+          status.textContent = '检测到邀请链接。请在弹出的窗口里设置你的后台密码。';
+          netlifyIdentity.open('signup');
+          return;
+        }
+
+        if (hasRecoveryToken || hasConfirmationToken) {
+          status.textContent = '检测到密码重置或确认链接。请在弹出的窗口里完成设置。';
+          netlifyIdentity.open();
+          return;
+        }
+
+        status.textContent = '没有检测到邀请链接。你可以登录，或使用“重置密码”发送新的密码邮件。';
+        netlifyIdentity.open('login');
+      };
+
+      if (netlifyIdentity) {
+        netlifyIdentity.on('init', () => {
+          if (hasIdentityToken) {
+            openWidget();
+          }
+        });
+
+        netlifyIdentity.on('login', () => {
+          document.location.href = '/admin/';
+        });
+      }
+
+      openIdentity.addEventListener('click', openWidget);
+      recoverPassword.addEventListener('click', () => {
+        if (netlifyIdentity) {
+          netlifyIdentity.open('login');
+        }
+      });
+
+      window.addEventListener('load', () => {
+        if (hasIdentityToken) {
+          openWidget();
+        }
+      });
+    </script>
+  </body>
+</html>
