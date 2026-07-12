@@ -1,11 +1,12 @@
 ---
-title: 个人博客网站
-description: 一个用于记录想法、技术文章和项目作品的 Astro 静态网站。
-date: 2026-07-05
+title: 个人网站
+description: 我的个人网站，百分之百由ai完成。
+date: 2026-07-13
 technologies:
   - Astro
   - Markdown
   - Decap CMS
+  - Prompt Engineering
 repo: https://github.com/your-name/personal-blog
 demo: https://example.com
 featured: true
