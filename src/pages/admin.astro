@@ -12,5 +12,26 @@
   </head>
   <body>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <script>
+      const netlifyIdentity = window.netlifyIdentity;
+
+      if (netlifyIdentity) {
+        const authParams = new URLSearchParams(window.location.hash.slice(1));
+        const hasIdentityToken =
+          authParams.has('invite_token') ||
+          authParams.has('recovery_token') ||
+          authParams.has('confirmation_token');
+
+        netlifyIdentity.on('init', () => {
+          if (hasIdentityToken) {
+            netlifyIdentity.open();
+          }
+        });
+
+        netlifyIdentity.on('login', () => {
+          document.location.href = '/admin/';
+        });
+      }
+    </script>
   </body>
 </html>
