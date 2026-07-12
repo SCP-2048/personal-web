@@ -11,9 +11,21 @@
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   </head>
   <body>
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-    <script>
+    <div id="identity-help" style="display: none; padding: 24px; font-family: system-ui, sans-serif;">
+      <h1>正在打开后台登录</h1>
+      <p>如果没有自动弹出设置密码或登录窗口，请点击下面的按钮。</p>
+      <button id="identity-open" type="button">打开登录窗口</button>
+    </div>
+
+    <script is:inline>
       const netlifyIdentity = window.netlifyIdentity;
+      const identityHelp = document.getElementById('identity-help');
+      const identityOpen = document.getElementById('identity-open');
+      const loadCms = () => {
+        const cmsScript = document.createElement('script');
+        cmsScript.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
+        document.body.appendChild(cmsScript);
+      };
 
       if (netlifyIdentity) {
         const authParams = new URLSearchParams(window.location.hash.slice(1));
@@ -22,15 +34,33 @@
           authParams.has('recovery_token') ||
           authParams.has('confirmation_token');
 
-        netlifyIdentity.on('init', () => {
+        const openIdentity = () => {
           if (hasIdentityToken) {
+            identityHelp.style.display = 'block';
             netlifyIdentity.open();
           }
+        };
+
+        identityOpen.addEventListener('click', () => {
+          netlifyIdentity.open();
         });
+
+        netlifyIdentity.on('init', openIdentity);
+        window.addEventListener('load', openIdentity);
 
         netlifyIdentity.on('login', () => {
           document.location.href = '/admin/';
         });
+
+        netlifyIdentity.on('logout', () => {
+          document.location.href = '/admin/';
+        });
+
+        if (!hasIdentityToken) {
+          loadCms();
+        }
+      } else {
+        loadCms();
       }
     </script>
   </body>

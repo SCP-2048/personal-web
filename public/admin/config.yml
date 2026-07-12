@@ -4,6 +4,8 @@ backend:
   name: git-gateway
   branch: main
 
+site_url: https://thesheng.netlify.app
+display_url: https://thesheng.netlify.app
 media_folder: public/uploads
 public_folder: /uploads
 locale: zh_Hans
@@ -15,20 +17,23 @@ collections:
     folder: src/content/blog
     create: true
     slug: "{{slug}}"
+    summary: "{{title}} - {{date}}"
+    identifier_field: title
     extension: md
     format: frontmatter
     fields:
-      - { label: 标题, name: title, widget: string }
-      - { label: 摘要, name: description, widget: text }
-      - { label: 日期, name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false }
+      - { label: 文章标题, name: title, widget: string, hint: 会显示在博客列表和文章页顶部 }
+      - { label: 摘要, name: description, widget: text, hint: 用一两句话说明这篇文章的内容 }
+      - { label: 发布日期, name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false }
       - label: 分类
         name: category
         widget: select
+        default: 技术文章
         options:
           - 思想与经历
           - 技术文章
-      - { label: 标签, name: tags, widget: list, required: false }
-      - { label: 草稿, name: draft, widget: boolean, default: false }
+      - { label: 标签, name: tags, widget: list, required: false, hint: 例如：Astro、学习笔记、项目复盘 }
+      - { label: 保存为草稿, name: draft, widget: boolean, default: false, hint: 草稿不会显示在公开博客列表里 }
       - { label: 正文, name: body, widget: markdown }
 
   - name: works
@@ -37,23 +42,25 @@ collections:
     folder: src/content/works
     create: true
     slug: "{{slug}}"
+    summary: "{{title}} - {{date}}"
+    identifier_field: title
     extension: md
     format: frontmatter
     fields:
-      - { label: 名称, name: title, widget: string }
-      - { label: 简介, name: description, widget: text }
+      - { label: 作品名称, name: title, widget: string }
+      - { label: 作品简介, name: description, widget: text, hint: 会显示在作品列表卡片里 }
       - { label: 日期, name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false }
-      - { label: 技术栈, name: technologies, widget: list, required: false }
-      - { label: 代码仓库, name: repo, widget: string, required: false }
-      - { label: 在线演示, name: demo, widget: string, required: false }
+      - { label: 技术栈, name: technologies, widget: list, required: false, hint: 例如：Astro、Markdown、Netlify }
+      - { label: 代码仓库链接, name: repo, widget: string, required: false }
+      - { label: 在线演示链接, name: demo, widget: string, required: false }
       - { label: 精选作品, name: featured, widget: boolean, default: false }
       - { label: 详情, name: body, widget: markdown, required: false }
 
   - name: site
-    label: 站点信息
+    label: 网站资料
     files:
       - name: profile
-        label: 联系信息
+        label: 个人资料和联系方式
         file: src/content/site/profile.json
         fields:
           - { label: 姓名, name: name, widget: string }
@@ -61,4 +68,4 @@ collections:
           - { label: 个人介绍, name: bio, widget: text }
           - { label: 邮箱, name: email, widget: string }
           - { label: 电话, name: phone, widget: string }
-          - { label: GitHub, name: github, widget: string }
+          - { label: GitHub 链接, name: github, widget: string }

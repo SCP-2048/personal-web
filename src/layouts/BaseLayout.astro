@@ -48,11 +48,24 @@ const siteTitle = '个人网站';
       const netlifyIdentity = window.netlifyIdentity;
 
       if (netlifyIdentity) {
-        netlifyIdentity.on('init', (user) => {
-          if (!user) {
-            netlifyIdentity.on('login', () => {
-              document.location.href = '/admin/';
-            });
+        const authParams = new URLSearchParams(window.location.hash.slice(1));
+        const hasIdentityToken =
+          authParams.has('invite_token') ||
+          authParams.has('recovery_token') ||
+          authParams.has('confirmation_token');
+
+        const openIdentity = () => {
+          if (hasIdentityToken) {
+            netlifyIdentity.open();
+          }
+        };
+
+        netlifyIdentity.on('init', openIdentity);
+        window.addEventListener('load', openIdentity);
+
+        netlifyIdentity.on('login', () => {
+          if (hasIdentityToken) {
+            document.location.href = '/admin/';
           }
         });
       }
