@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import profile from '../content/site/profile.json';
+---
+
+<BaseLayout title="联系" description="我的邮箱、电话和 GitHub 账号。">
+  <section class="section">
+    <p class="eyebrow">联系</p>
+    <h1>欢迎通过这些方式找到我。</h1>
+    <p class="page-intro lead">{profile.bio}</p>
+  </section>
+
+  <section class="section">
+    <div class="contact-grid">
+      <a class="contact-card" href={`mailto:${profile.email}`}>
+        <span>邮箱</span>
+        <strong>{profile.email}</strong>
+      </a>
+      <a class="contact-card" href={`tel:${profile.phone}`}>
+        <span>电话</span>
+        <strong>{profile.phone}</strong>
+      </a>
+      <a class="contact-card" href={profile.github}>
+        <span>GitHub</span>
+        <strong>{profile.github}</strong>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

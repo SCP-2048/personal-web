@@ -1,0 +1,26 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  frontmatter: {
+    title: string;
+    description?: string;
+    date?: string;
+  };
+}
+
+const { frontmatter } = Astro.props;
+---
+
+<BaseLayout title={frontmatter.title} description={frontmatter.description}>
+  <article class="section prose">
+    {
+      frontmatter.date && (
+        <time class="post-meta" datetime={frontmatter.date}>
+          {frontmatter.date}
+        </time>
+      )
+    }
+    <slot />
+  </article>
+</BaseLayout>

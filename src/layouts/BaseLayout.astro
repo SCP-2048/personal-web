@@ -1,0 +1,47 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = '一个记录技术文章、作品和生活思考的中文个人网站。',
+} = Astro.props;
+
+const siteTitle = '个人网站';
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title === siteTitle ? siteTitle : `${title} | ${siteTitle}`}</title>
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="/" aria-label="回到首页">个人网站</a>
+        <nav class="nav" aria-label="主导航">
+          <a href="/blog/">博客</a>
+          <a href="/works/">作品</a>
+          <a href="/contact/">联系</a>
+        </nav>
+      </header>
+
+      <main>
+        <slot />
+      </main>
+
+      <footer class="site-footer">
+        <p>© {new Date().getFullYear()} 个人网站。记录技术、作品和真实的思考。</p>
+        <a class="footer-admin" href="/admin/">进入后台</a>
+      </footer>
+    </div>
+  </body>
+</html>

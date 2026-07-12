@@ -1,0 +1,53 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const works = (await getCollection('works')).sort(
+  (a, b) => Number(b.data.featured) - Number(a.data.featured) || b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+const renderedWorks = await Promise.all(
+  works.map(async (work) => ({
+    work,
+    Content: (await render(work)).Content,
+  })),
+);
+---
+
+<BaseLayout title="作品" description="展示我做过的程序和项目。">
+  <section class="section">
+    <p class="eyebrow">作品</p>
+    <h1>程序和项目展示</h1>
+    <p class="page-intro lead">这里展示我做过的程序、项目和实验，包括技术栈、代码仓库和在线演示。</p>
+  </section>
+
+  <section class="section work-list">
+    {
+      renderedWorks.map(({ work, Content }) => (
+        <article class="work-card">
+          <div>
+            <div class="meta-row">
+              <time datetime={work.data.date.toISOString()}>{work.data.date.toLocaleDateString('zh-CN')}</time>
+              {work.data.featured && <span>精选</span>}
+            </div>
+            <h2>{work.data.title}</h2>
+            <p>{work.data.description}</p>
+            <div class="tag-list">
+              {work.data.technologies.map((technology) => (
+                <span>{technology}</span>
+              ))}
+            </div>
+            <div class="work-body prose">
+              <Content />
+            </div>
+          </div>
+
+          <div class="work-links">
+            {work.data.repo && <a class="button secondary" href={work.data.repo}>代码仓库</a>}
+            {work.data.demo && <a class="button" href={work.data.demo}>在线演示</a>}
+          </div>
+        </article>
+      ))
+    }
+  </section>
+</BaseLayout>
