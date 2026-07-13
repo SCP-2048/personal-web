@@ -6,6 +6,11 @@ const optionalUrl = z.preprocess(
   z.string().url().optional(),
 );
 
+const optionalImage = z.preprocess(
+  (value) => (value === '' ? undefined : value),
+  z.string().optional(),
+);
+
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
   schema: z.object({
@@ -15,6 +20,7 @@ const blog = defineCollection({
     category: z.enum(['思想与经历', '技术文章']),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
+    coverImage: optionalImage,
   }),
 });
 

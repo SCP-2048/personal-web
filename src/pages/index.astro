@@ -33,9 +33,21 @@ const works = (await getCollection('works'))
         {
           posts.map((post) => (
             <a class="article-row" href={`/blog/${post.id}/`}>
-              <time datetime={post.data.date.toISOString()}>{post.data.date.toLocaleDateString('zh-CN')}</time>
-              <h3>{post.data.title}</h3>
-              <p>{post.data.description}</p>
+              {
+                post.data.coverImage && (
+                  <img
+                    class="article-row-cover"
+                    src={post.data.coverImage}
+                    alt={post.data.title}
+                    loading="lazy"
+                  />
+                )
+              }
+              <div class="article-row-body">
+                <time datetime={post.data.date.toISOString()}>{post.data.date.toLocaleDateString('zh-CN')}</time>
+                <h3>{post.data.title}</h3>
+                <p>{post.data.description}</p>
+              </div>
             </a>
           ))
         }

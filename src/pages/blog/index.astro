@@ -17,16 +17,28 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
       {
         posts.map((post) => (
           <a class="article-row" href={`/blog/${post.id}/`}>
-            <div class="meta-row">
-              <time datetime={post.data.date.toISOString()}>{post.data.date.toLocaleDateString('zh-CN')}</time>
-              <span>{post.data.category}</span>
-            </div>
-            <h2>{post.data.title}</h2>
-            <p>{post.data.description}</p>
-            <div class="tag-list">
-              {post.data.tags.map((tag) => (
-                <span>{tag}</span>
-              ))}
+            {
+              post.data.coverImage && (
+                <img
+                  class="article-row-cover"
+                  src={post.data.coverImage}
+                  alt={post.data.title}
+                  loading="lazy"
+                />
+              )
+            }
+            <div class="article-row-body">
+              <div class="meta-row">
+                <time datetime={post.data.date.toISOString()}>{post.data.date.toLocaleDateString('zh-CN')}</time>
+                <span>{post.data.category}</span>
+              </div>
+              <h2>{post.data.title}</h2>
+              <p>{post.data.description}</p>
+              <div class="tag-list">
+                {post.data.tags.map((tag) => (
+                  <span>{tag}</span>
+                ))}
+              </div>
             </div>
           </a>
         ))
