@@ -3,20 +3,19 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import profile from '../content/site/profile.json';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const featuredPost = allPosts.find(({ data }) => data.featured);
+const posts = featuredPost ? [featuredPost] : allPosts.slice(0, 1);
 
 const works = (await getCollection('works'))
   .sort((a, b) => Number(b.data.featured) - Number(a.data.featured))
   .slice(0, 3);
 ---
 
-<BaseLayout title="个人网站" description={profile.headline}>
+<BaseLayout title={`${profile.name}的个人网站`}>
   <section class="home-intro">
-    <p class="eyebrow">中文个人网站</p>
-    <h1>{profile.name}的博客、作品和联系方式。</h1>
-    <p class="lead">{profile.headline}。{profile.bio}</p>
+    <h1>{profile.name}的个人网站</h1>
   </section>
 
   <section class="section-stack">

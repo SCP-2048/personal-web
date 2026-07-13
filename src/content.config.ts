@@ -24,6 +24,7 @@ const blog = defineCollection({
     date: z.coerce.date(),
     tags: z.array(z.string()).min(1, '每篇文章至少需要一个标签'),
     draft: z.boolean().default(false),
+    featured: z.boolean().default(false),
     coverImage: optionalImage,
   }),
 });

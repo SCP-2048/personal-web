@@ -27,6 +27,7 @@ collections:
       - { label: 发布日期, name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false }
       - { label: 标签, name: tags, widget: list, hint: 用标签组织文章；例如：Astro、学习笔记、项目复盘 }
       - { label: 保存为草稿, name: draft, widget: boolean, default: false, hint: 草稿不会显示在公开博客列表里 }
+      - { label: 首页推荐, name: featured, widget: boolean, default: false, hint: 勾选后首页优先显示这篇文章；若多篇被勾选，则显示最新的一篇 }
       - { label: 封面图片, name: coverImage, widget: image, required: false, hint: 会显示在博客列表和文章页顶部 }
       - { label: 正文, name: body, widget: markdown, hint: 正文里也可以插入图片，使用编辑器上传即可 }
 
@@ -58,7 +59,6 @@ collections:
         file: src/content/site/profile.json
         fields:
           - { label: 姓名, name: name, widget: string }
-          - { label: 首页标题, name: headline, widget: string }
           - { label: 个人介绍, name: bio, widget: text }
           - { label: 邮箱, name: email, widget: string }
           - { label: 电话, name: phone, widget: string }
