@@ -32,23 +32,30 @@ const works = (await getCollection('works'))
       <div class="article-list">
         {
           posts.map((post) => (
-            <a class="article-row" href={`/blog/${post.id}/`}>
+            <article class="article-row">
               {
                 post.data.coverImage && (
-                  <img
-                    class="article-row-cover"
-                    src={post.data.coverImage}
-                    alt={post.data.title}
-                    loading="lazy"
-                  />
+                  <a href={`/blog/${post.id}/`} aria-label={`阅读《${post.data.title}》`}>
+                    <img
+                      class="article-row-cover"
+                      src={post.data.coverImage}
+                      alt=""
+                      loading="lazy"
+                    />
+                  </a>
                 )
               }
               <div class="article-row-body">
                 <time datetime={post.data.date.toISOString()}>{post.data.date.toLocaleDateString('zh-CN')}</time>
-                <h3>{post.data.title}</h3>
-                <p>{post.data.description}</p>
+                <h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
+                {post.data.description && <p>{post.data.description}</p>}
+                <div class="tag-list">
+                  {post.data.tags.map((tag) => (
+                    <a href={`/blog/tag/${encodeURIComponent(tag)}/`}>{tag}</a>
+                  ))}
+                </div>
               </div>
-            </a>
+            </article>
           ))
         }
       </div>

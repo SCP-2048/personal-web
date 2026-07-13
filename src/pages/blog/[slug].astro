@@ -29,13 +29,21 @@ const { Content } = await render(post);
       )
     }
     <div class="article-header">
-      <p class="eyebrow">{post.data.category}</p>
+      <p class="eyebrow">博客文章</p>
       <h1>{post.data.title}</h1>
-      <p>{post.data.description}</p>
+      {post.data.description && <p>{post.data.description}</p>}
       <div class="meta-row">
         <time datetime={post.data.date.toISOString()}>{post.data.date.toLocaleDateString('zh-CN')}</time>
-        <span>{post.data.tags.join(' / ')}</span>
       </div>
+      {
+        post.data.tags.length > 0 && (
+          <div class="tag-list">
+            {post.data.tags.map((tag) => (
+              <a href={`/blog/tag/${encodeURIComponent(tag)}/`}>{tag}</a>
+            ))}
+          </div>
+        )
+      }
     </div>
     <Content />
   </article>

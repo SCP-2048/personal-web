@@ -5,6 +5,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
+
+const tagCounts = [...new Set(posts.flatMap((post) => post.data.tags))]
+  .map((tag) => ({
+    tag,
+    count: posts.filter((post) => post.data.tags.includes(tag)).length,
+  }))
+  .sort((a, b) => a.tag.localeCompare(b.tag, 'zh-CN'));
 ---
 
 <BaseLayout title="博客" description="记录想法、经历和技术文章的博客。">
@@ -13,34 +20,47 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
     <h1>想法、经历和技术文章</h1>
     <p class="page-intro lead">这里既记录生活与成长，也整理技术学习和项目实践中的经验。</p>
 
+    {
+      tagCounts.length > 0 && (
+        <nav class="tag-list blog-tag-index" aria-label="按标签浏览">
+          {tagCounts.map(({ tag, count }) => (
+            <a href={`/blog/tag/${encodeURIComponent(tag)}/`}>
+              {tag}（{count}）
+            </a>
+          ))}
+        </nav>
+      )
+    }
+
     <div class="article-list">
       {
         posts.map((post) => (
-          <a class="article-row" href={`/blog/${post.id}/`}>
+          <article class="article-row">
             {
               post.data.coverImage && (
-                <img
-                  class="article-row-cover"
-                  src={post.data.coverImage}
-                  alt={post.data.title}
-                  loading="lazy"
-                />
+                <a href={`/blog/${post.id}/`} aria-label={`阅读《${post.data.title}》`}>
+                  <img
+                    class="article-row-cover"
+                    src={post.data.coverImage}
+                    alt=""
+                    loading="lazy"
+                  />
+                </a>
               )
             }
             <div class="article-row-body">
               <div class="meta-row">
                 <time datetime={post.data.date.toISOString()}>{post.data.date.toLocaleDateString('zh-CN')}</time>
-                <span>{post.data.category}</span>
               </div>
-              <h2>{post.data.title}</h2>
-              <p>{post.data.description}</p>
+              <h2><a href={`/blog/${post.id}/`}>{post.data.title}</a></h2>
+              {post.data.description && <p>{post.data.description}</p>}
               <div class="tag-list">
                 {post.data.tags.map((tag) => (
-                  <span>{tag}</span>
+                  <a href={`/blog/tag/${encodeURIComponent(tag)}/`}>{tag}</a>
                 ))}
               </div>
             </div>
-          </a>
+          </article>
         ))
       }
     </div>

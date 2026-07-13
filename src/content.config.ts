@@ -11,14 +11,18 @@ const optionalImage = z.preprocess(
   z.string().optional(),
 );
 
+const optionalText = z.preprocess(
+  (value) => (value === '' ? undefined : value),
+  z.string().optional(),
+);
+
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
   schema: z.object({
     title: z.string(),
-    description: z.string(),
+    description: optionalText,
     date: z.coerce.date(),
-    category: z.enum(['思想与经历', '技术文章']),
-    tags: z.array(z.string()).default([]),
+    tags: z.array(z.string()).min(1, '每篇文章至少需要一个标签'),
     draft: z.boolean().default(false),
     coverImage: optionalImage,
   }),

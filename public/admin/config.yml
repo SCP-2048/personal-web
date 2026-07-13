@@ -23,16 +23,9 @@ collections:
     format: frontmatter
     fields:
       - { label: 文章标题, name: title, widget: string, hint: 会显示在博客列表和文章页顶部 }
-      - { label: 摘要, name: description, widget: text, hint: 用一两句话说明这篇文章的内容 }
+      - { label: 摘要, name: description, widget: text, required: false, hint: 可选；填写后会显示在博客列表和文章页顶部 }
       - { label: 发布日期, name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false }
-      - label: 分类
-        name: category
-        widget: select
-        default: 技术文章
-        options:
-          - 思想与经历
-          - 技术文章
-      - { label: 标签, name: tags, widget: list, required: false, hint: 例如：Astro、学习笔记、项目复盘 }
+      - { label: 标签, name: tags, widget: list, hint: 用标签组织文章；例如：Astro、学习笔记、项目复盘 }
       - { label: 保存为草稿, name: draft, widget: boolean, default: false, hint: 草稿不会显示在公开博客列表里 }
       - { label: 封面图片, name: coverImage, widget: image, required: false, hint: 会显示在博客列表和文章页顶部 }
       - { label: 正文, name: body, widget: markdown, hint: 正文里也可以插入图片，使用编辑器上传即可 }
