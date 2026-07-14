@@ -258,6 +258,11 @@ h3 {
   box-shadow: 0 30px 90px rgb(62 45 28 / 14%);
 }
 
+.post-card:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+
 .post-meta {
   color: var(--accent);
   font-size: 14px;

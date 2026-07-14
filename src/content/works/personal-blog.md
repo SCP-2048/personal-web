@@ -7,7 +7,7 @@ technologies:
   - Markdown
   - Decap CMS
   - Prompt Engineering
-repo: https://github.com/your-name/personal-blog
+repo: https://github.com/SCP-2048/personal-web
 demo: https://example.com
 featured: true
 ---

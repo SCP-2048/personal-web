@@ -72,14 +72,18 @@ const works = (await getCollection('works'))
       <div class="post-grid">
         {
           works.map((work) => (
-            <article class="post-card">
+            <a
+              class="post-card"
+              href={work.data.repo ?? '/works/'}
+              aria-label={work.data.repo ? `在 GitHub 查看${work.data.title}` : `查看${work.data.title}`}
+            >
               <div>
                 <p class="post-meta">{work.data.date.toLocaleDateString('zh-CN')}</p>
                 <h3>{work.data.title}</h3>
                 <p>{work.data.description}</p>
               </div>
               <span>{work.data.technologies.join(' / ')}</span>
-            </article>
+            </a>
           ))
         }
       </div>
