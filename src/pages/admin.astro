@@ -1,47 +1,14 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<!doctype html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="noindex" />
-    <title>网站后台 | 个人网站</title>
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  </head>
-  <body>
-    <script is:inline>
-      const netlifyIdentity = window.netlifyIdentity;
-      const loadCms = () => {
-        const cmsScript = document.createElement('script');
-        cmsScript.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
-        document.body.appendChild(cmsScript);
-      };
-
-      const authParams = new URLSearchParams(window.location.hash.slice(1));
-      const hasIdentityToken =
-        authParams.has('invite_token') ||
-        authParams.has('recovery_token') ||
-        authParams.has('confirmation_token');
-
-      if (hasIdentityToken) {
-        window.location.replace(`/identity/${window.location.hash}`);
-      }
-
-      if (netlifyIdentity) {
-        netlifyIdentity.on('login', () => {
-          document.location.href = '/admin/';
-        });
-
-        netlifyIdentity.on('logout', () => {
-          document.location.href = '/admin/';
-        });
-
-        loadCms();
-      } else {
-        loadCms();
-      }
-    </script>
-  </body>
-</html>
+<BaseLayout title="内容后台" description="使用 Pages CMS 管理网站内容。">
+  <section class="section">
+    <p class="eyebrow">内容后台</p>
+    <h1>使用 Pages CMS 编辑网站</h1>
+    <p class="page-intro lead">
+      使用 GitHub 账号登录后，可以编辑博客、作品、个人资料和图片。保存内容后，Cloudflare Pages 会自动重新部署网站。
+    </p>
+    <a class="button" href="https://app.pagescms.org/">打开 Pages CMS</a>
+  </section>
+</BaseLayout>

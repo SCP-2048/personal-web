@@ -43,26 +43,5 @@ const siteTitle = '盛实的个人网站';
         <a class="footer-admin" href="/admin/">进入后台</a>
       </footer>
     </div>
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <script is:inline>
-      const netlifyIdentity = window.netlifyIdentity;
-      const authParams = new URLSearchParams(window.location.hash.slice(1));
-      const hasIdentityToken =
-        authParams.has('invite_token') ||
-        authParams.has('recovery_token') ||
-        authParams.has('confirmation_token');
-
-      if (hasIdentityToken && window.location.pathname !== '/identity/') {
-        window.location.replace(`/identity/${window.location.hash}`);
-      }
-
-      if (netlifyIdentity) {
-        netlifyIdentity.on('login', () => {
-          if (hasIdentityToken) {
-            document.location.href = '/admin/';
-          }
-        });
-      }
-    </script>
   </body>
 </html>

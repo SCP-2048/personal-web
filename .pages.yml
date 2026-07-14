@@ -1,0 +1,144 @@
+media:
+  input: public/uploads
+  output: /uploads
+  rename: safe
+  categories: [image]
+
+content:
+  - name: blog
+    label: 博客
+    type: collection
+    path: src/content/blog
+    format: yaml-frontmatter
+    filename:
+      template: "{primary}.md"
+      field: create
+    view:
+      fields: [title, date, draft, featured]
+      primary: title
+      sort: [date, title]
+      search: [title, description, tags]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: 文章标题
+        type: string
+        required: true
+      - name: description
+        label: 摘要
+        type: text
+        required: false
+        description: 可选；填写后显示在博客列表和文章页顶部。
+      - name: date
+        label: 发布日期
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+      - name: tags
+        label: 标签
+        type: string
+        list:
+          min: 1
+        required: true
+        description: 用标签组织文章，例如 Astro、学习笔记、项目复盘。
+      - name: draft
+        label: 保存为草稿
+        type: boolean
+        default: false
+        description: 草稿不会显示在公开博客列表中。
+      - name: featured
+        label: 首页推荐
+        type: boolean
+        default: false
+        description: 首页优先显示推荐文章；多篇推荐时显示最新的一篇。
+      - name: coverImage
+        label: 封面图片
+        type: image
+        required: false
+      - name: body
+        label: 正文
+        type: rich-text
+        required: true
+
+  - name: works
+    label: 作品
+    type: collection
+    path: src/content/works
+    format: yaml-frontmatter
+    filename:
+      template: "{primary}.md"
+      field: create
+    view:
+      fields: [title, date, featured]
+      primary: title
+      sort: [date, title]
+      search: [title, description, technologies]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: 作品名称
+        type: string
+        required: true
+      - name: description
+        label: 作品简介
+        type: text
+        required: true
+      - name: date
+        label: 日期
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+      - name: technologies
+        label: 技术栈
+        type: string
+        list: true
+        required: false
+      - name: repo
+        label: 代码仓库链接
+        type: string
+        required: false
+      - name: demo
+        label: 在线演示链接
+        type: string
+        required: false
+      - name: featured
+        label: 精选作品
+        type: boolean
+        default: false
+      - name: body
+        label: 详情
+        type: rich-text
+        required: false
+
+  - name: profile
+    label: 个人资料和联系方式
+    type: file
+    path: src/content/site/profile.json
+    format: json
+    fields:
+      - name: name
+        label: 姓名
+        type: string
+        required: true
+      - name: bio
+        label: 个人介绍
+        type: text
+        required: true
+      - name: email
+        label: 邮箱
+        type: string
+        required: true
+      - name: phone
+        label: 电话
+        type: string
+        required: true
+      - name: github
+        label: GitHub 链接
+        type: string
+        required: true
